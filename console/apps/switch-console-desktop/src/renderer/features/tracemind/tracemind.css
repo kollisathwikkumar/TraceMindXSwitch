@@ -1,0 +1,389 @@
+/* Reference lock: Switch's native neutral surfaces, compact workflow navigation,
+   evidence-first hierarchy. Accent is reserved for selection and actions. */
+.tm-workspace {
+  --tm-line: var(--border);
+  font-size: 13px;
+  overflow: hidden;
+}
+.tm-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 0;
+}
+.tm-topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 26px 16px;
+  border-bottom: 1px solid var(--tm-line);
+}
+.tm-topbar h2 {
+  font-size: 18px;
+  letter-spacing: -0.035em;
+}
+.tm-topbar p {
+  font-size: 12px;
+}
+.tm-brand-mark {
+  display: grid;
+  place-content: center;
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--tm-line);
+  border-radius: 9px;
+  font-size: 20px;
+  font-weight: 650;
+}
+.tm-brand-mark span {
+  position: absolute;
+  right: 5px;
+  bottom: 2px;
+  font-size: 11px;
+}
+.tm-channel {
+  margin-left: auto;
+  font-size: 10px;
+  font-family: monospace;
+  letter-spacing: 0.12em;
+  color: var(--foreground-muted);
+}
+.tm-project-bar {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 26px;
+  border-bottom: 1px solid var(--tm-line);
+}
+.tm-project-bar > label {
+  flex: 1;
+  max-width: 430px;
+  font-size: 11px;
+  gap: 5px;
+  color: var(--foreground-muted);
+}
+.tm-project-bar select {
+  color: var(--foreground);
+  width: 100%;
+}
+.tm-model-state {
+  margin-left: auto;
+  align-self: center;
+  color: var(--foreground-muted);
+  font-size: 11px;
+}
+.tm-body {
+  display: grid;
+  grid-template-columns: 214px minmax(0, 1fr);
+  min-height: 0;
+  flex: 1;
+}
+.tm-navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 20px 10px 12px;
+  overflow-y: auto;
+  border-right: 1px solid var(--tm-line);
+  background: color-mix(in srgb, var(--foreground) 2%, var(--background));
+}
+.tm-nav-label {
+  padding: 0 12px 12px;
+  font: 10px monospace;
+  letter-spacing: 0.12em;
+  color: var(--foreground-muted);
+}
+.tm-nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 10px 11px;
+  min-height: 40px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.tm-nav-item [data-section-title] {
+  font-size: 12px;
+  font-weight: 450;
+}
+.tm-nav-index {
+  font: 10px monospace;
+  color: var(--foreground-muted);
+  opacity: 0.7;
+}
+.tm-nav-item:hover {
+  background: color-mix(in srgb, var(--foreground) 5%, transparent);
+}
+.tm-nav-item[aria-current='page'] {
+  background: color-mix(in srgb, var(--primary) 9%, var(--background));
+  border-color: color-mix(in srgb, var(--primary) 24%, var(--tm-line));
+}
+.tm-nav-item[aria-current='page'] [data-section-title] {
+  color: var(--primary);
+  font-weight: 600;
+}
+.tm-nav-item:focus-visible,
+.tm-issue-row:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.tm-nav-item[data-tracemind-section='notes'] {
+  margin-top: 18px;
+  border-top: 1px solid var(--tm-line);
+  border-radius: 0 0 5px 5px;
+}
+.tm-nav-footer {
+  margin-top: auto;
+  padding: 28px 12px 8px;
+  color: var(--foreground-muted);
+  font-size: 10px;
+  line-height: 1.8;
+}
+.tm-content {
+  overflow-y: auto;
+  min-width: 0;
+  padding: 26px 30px 40px;
+  scrollbar-gutter: stable;
+}
+.tm-page-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 26px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--tm-line);
+}
+.tm-eyebrow {
+  font: 10px monospace;
+  letter-spacing: 0.1em;
+  color: var(--foreground-muted);
+  text-transform: uppercase;
+}
+.tm-page-heading h1 {
+  margin: 9px 0 8px;
+  font-size: 26px;
+  line-height: 1.15;
+  font-weight: 550;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+.tm-page-heading p:not(.tm-eyebrow) {
+  color: var(--foreground-muted);
+  font-size: 12px;
+  line-height: 1.6;
+  max-width: 640px;
+}
+.tm-status-pill {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  border: 1px solid var(--tm-line);
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 10px;
+  color: var(--foreground-muted);
+}
+.tm-panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.tm-panel-heading h2 {
+  font-weight: 550;
+}
+.tm-count {
+  margin-left: 8px;
+  color: var(--foreground-muted);
+}
+.tm-empty {
+  padding: 50px 24px;
+  border: 1px dashed var(--tm-line);
+  border-radius: 8px;
+  text-align: center;
+  color: var(--foreground-muted);
+}
+.tm-empty h3 {
+  color: var(--foreground);
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+.tm-issue-list {
+  border: 1px solid var(--tm-line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.tm-issue-row {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 100px minmax(120px, 1fr) 70px 100px 20px;
+  align-items: center;
+  gap: 16px;
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid var(--tm-line);
+}
+.tm-issue-row:last-child {
+  border: 0;
+}
+.tm-issue-row:hover {
+  background: color-mix(in srgb, var(--foreground) 4%, transparent);
+}
+.tm-process {
+  border: 1px solid var(--tm-line);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 18px;
+}
+.tm-process h2 {
+  font-size: 17px;
+  font-weight: 550;
+  letter-spacing: -0.02em;
+  margin-bottom: 9px;
+}
+.tm-process p,
+.tm-boundary p,
+.tm-graph-entry p {
+  color: var(--foreground-muted);
+  line-height: 1.7;
+  font-size: 12px;
+}
+.tm-process ol {
+  margin: 22px 0;
+  padding: 0;
+  list-style: none;
+}
+.tm-process li {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 16px 0;
+  border-top: 1px solid var(--tm-line);
+}
+.tm-process li > span {
+  font: 11px monospace;
+  color: var(--foreground-muted);
+}
+.tm-boundary {
+  margin-top: 20px;
+  padding: 18px 20px;
+  border-left: 2px solid var(--tm-line);
+}
+.tm-boundary strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+.tm-graph-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border: 1px solid var(--tm-line);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 12px 0;
+}
+.tm-graph-entry h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+  font-weight: 550;
+}
+.tm-filter {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--foreground-muted);
+  padding: 7px 0;
+}
+.tm-content [aria-label='Full-page graph workspace'] {
+  grid-template-columns: minmax(160px, 20%) minmax(0, 1fr) minmax(200px, 26%);
+}
+.tm-content pre {
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.tm-content section {
+  min-width: 0;
+}
+.tm-content [hidden] {
+  display: none !important;
+}
+@media (max-width: 1100px) {
+  .tm-body {
+    grid-template-columns: 185px minmax(0, 1fr);
+  }
+  .tm-content {
+    padding: 22px 18px;
+  }
+  .tm-content [aria-label='Full-page graph workspace'] {
+    grid-template-columns: 180px minmax(0, 1fr);
+  }
+  .tm-content [aria-label='Graph note navigator'] {
+    grid-column: 1 / -1;
+  }
+  .tm-channel {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .tm-body {
+    display: flex;
+    flex-direction: column;
+  }
+  .tm-navigation {
+    flex-direction: row;
+    flex-shrink: 0;
+    overflow-x: auto;
+    padding: 8px;
+    border-right: 0;
+    border-bottom: 1px solid var(--tm-line);
+  }
+  .tm-nav-item {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .tm-nav-label,
+  .tm-nav-footer,
+  .tm-nav-index {
+    display: none;
+  }
+  .tm-nav-item[data-tracemind-section='notes'] {
+    margin: 0;
+    border: 1px solid transparent;
+  }
+  .tm-topbar,
+  .tm-project-bar {
+    padding: 12px 16px;
+  }
+  .tm-model-state {
+    margin-left: 0;
+  }
+  .tm-page-heading {
+    align-items: start;
+  }
+  .tm-page-heading > .tm-status-pill {
+    display: none;
+  }
+  .tm-content [aria-label='Full-page graph workspace'] {
+    display: flex;
+    flex-direction: column;
+  }
+  .tm-issue-row {
+    grid-template-columns: 80px minmax(0, 1fr) 20px;
+    gap: 8px;
+  }
+  .tm-issue-row > span:nth-child(3),
+  .tm-issue-row > span:nth-child(4) {
+    display: none;
+  }
+}

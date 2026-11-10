@@ -2,10 +2,11 @@
 export function redactOutboundText(value: string): string {
   return value
     .replace(
-      /-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----[\s\S]*?(?:-----END [A-Z0-9 ]*PRIVATE KEY-----|$)/gi,
+      /-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----/[\s\S]*?(?:-----END [A-Z0-9 ]*PRIVATE KEY-----|$)/gi,
       '[REDACTED PRIVATE KEY]'
     )
     .replace(/\bBearer\s+[A-Za-z0-9._~+/-]{8,}={0,2}/gi, 'Bearer [REDACTED]')
+    .replace(/\b(Authorization|Proxy-Authorization)\b\s*:\s*(?:Basic|Digest)\s+[^\r\n]*/gi, '$1=[REDACTED]')
     .replace(
       /\b(token|credential|connection[_-]?string|api[_-]?key|access[_-]?token|refresh[_-]?token|auth(?:orization)?|password|passwd|secret|client[_-]?secret|private[_-]?key|access[_-]?key)\b\s*[:=]\s*(?:"[^"\r\n]*"|'[^'\r\n]*'|[^\s,;]+)/gi,
       '$1=[REDACTED]'

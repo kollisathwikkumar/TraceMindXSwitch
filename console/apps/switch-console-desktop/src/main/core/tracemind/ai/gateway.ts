@@ -20,8 +20,71 @@ const MAX_EVIDENCE_ITEMS = 120;
 const MAX_EVIDENCE_EXCERPT_CHARS = 6_000;
 const MAX_LIMITATIONS = 30;
 
+function isPrivateIpv4(ip: string): boolean {
+  const parts = ip.split('.');
+  if (parts.length !== 4) return false;
+  const nums = parts.map(Number);
+  if (nums.some(isNaN)) return false;
+  const [a, b, c, d] = nums;
+  // 0.0.0.0/8
+  if (a === 0) return true;
+  // 10.0.0.0/8
+  if (a === 10) return true;
+  // 100.64.0.0/10 (CGNAT)
+  if (a === 100 && b >= 64 && b <= 127) return true;
+  // 127.0.0.0/8 (loopback)
+  if (a === 127) return true;
+  // 169.254.0.0/16 (link-local / metadata)
+  if (a === 169 && b === 254) return true;
+  // 172.16.0.0/12
+  if (a === 172 && b >= 16 && b <= 31) return true;
+  // 192.168.0.0/16
+  if (a === 192 && b === 168) return true;
+  // 192.0.0.0/24 (IETF protocol assignments)
+  if (a === 192 && b === 0 && c === 0) return true;
+  // 198.18.0.0/15 (benchmarking)
+  if (a === 198 && (b === 18 || b === 19)) return true;
+  // 224.0.0.0/4 (multicast)
+  if (a >= 224) return true;
+  return false;
+}
+
+function isSafeProviderEndpoint(value: string): boolean {
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    return false;
+  }
+  // reject credentials/userinfo
+  if (url.username || url.password) return false;
+  const { protocol, hostname } = url;
+  const isLocalHttp = protocol === 'http:' && (
+    hostname === '127.0.0.1' || hostname === '::1' || hostname === 'localhost'
+  );
+  const isHttps = protocol === 'https:';
+  if (!isHttps && !isLocalHttp) return false;
+  if (isHttps) {
+    // reject private/loopback/link-local/metadata IP ranges
+    if (isPrivateIpv4(hostname)) return false;
+    // reject IPv6 literals (cannot safely validate scopes)
+    if (hostname.includes(':')) return false;
+    // reject local hostnames that could resolve to loopback/internal
+    const lowerHostname = hostname.toLowerCase();
+    if (
+      lowerHostname === 'localhost' ||
+      lowerHostname.endsWith('.localhost') ||
+      lowerHostname.endsWith('.local') ||
+      lowerHostname.endsWith('.internal')
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
+
 const providerConfigSchema = z.object({
-  endpoint: z.string().min(1).max(2_048),
+  endpoint: z.string().min(1).max(2_048).refine(isSafeProviderEndpoint, 'Provider endpoint must be a safe https URL (or http://127.0.0.1 for local providers)'),
   model: z.string().min(1).max(100),
   apiKey: z.string().min(8).max(4_096),
 });

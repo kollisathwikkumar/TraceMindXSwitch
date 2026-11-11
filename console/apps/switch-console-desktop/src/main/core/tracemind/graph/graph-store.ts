@@ -24,51 +24,28 @@ import {
   type PersistentGraphRelation,
   type PersistentGraphRelationship,
 } from './model';
+import {
+  projectIdSchema,
+  revisionSchema,
+  maxGraphSnapshotBytes,
+  maxGraphHistoryBytes,
+  maxGraphRevisions,
+  maxGraphNodes,
+  maxGraphRetrievalReasons,
+  maxGraphParserFailures,
+  graphParserFailurePageSize,
+  maxGraphChangedPaths,
+  insertBatchSize,
+  snapshotRecordSchema,
+  parserFailureSchema,
+  graphPageCursorSchema,
+  graphScopedPageCursorSchema,
+  parserFailurePageCursorSchema,
+  maxGraphPageCursorBytes,
+  type StoredGraphSnapshot,
+} from './graph-store.schema';
 
-const projectIdSchema = z.string().regex(/^[A-Za-z0-9_-]{1,128}$/);
-const revisionSchema = z.string().min(1).max(128);
-const maxGraphSnapshotBytes = 256 * 1024 * 1024;
-const maxGraphHistoryBytes = 512 * 1024 * 1024;
-const maxGraphRevisions = 1000;
-const maxGraphNodes = 100_000;
-const maxGraphRetrievalReasons = 100_000;
-const maxGraphParserFailures = 10_000;
-const graphParserFailurePageSize = 50;
-const maxGraphChangedPaths = 100_000;
-const insertBatchSize = 80;
-const snapshotRecordSchema = graphSnapshotSchema
-  .extend({ capturedAt: z.number().int().nonnegative() })
-  .strict();
-const parserFailureSchema = z
-  .object({ path: graphPathSchema, language: z.string().max(128), message: z.string().max(1024) })
-  .strict();
-const graphPageCursorSchema = z
-  .object({
-    version: z.literal(1),
-    projectId: projectIdSchema,
-    revision: revisionSchema,
-    afterId: z.string().min(1).max(512),
-  })
-  .strict();
-const graphScopedPageCursorSchema = z
-  .object({
-    version: z.literal(2),
-    projectId: projectIdSchema,
-    revision: revisionSchema,
-    contextHash: z.string().regex(/^[a-f0-9]{64}$/),
-    afterId: z.string().min(1).max(512),
-  })
-  .strict();
-const parserFailurePageCursorSchema = z
-  .object({
-    version: z.literal(1),
-    projectId: projectIdSchema,
-    revision: revisionSchema,
-    afterOrdinal: z.number().int().nonnegative().max(maxGraphParserFailures),
-  })
-  .strict();
-const maxGraphPageCursorBytes = 1024;
-export type StoredGraphSnapshot = z.infer<typeof snapshotRecordSchema>;
+export type { StoredGraphSnapshot };
 
 export interface GraphAdjacencyIndexRow {
   id: string;

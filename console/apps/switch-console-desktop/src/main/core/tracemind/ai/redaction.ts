@@ -2,7 +2,7 @@
 export function redactOutboundText(value: string): string {
   return value
     .replace(
-      /-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----/[\s\S]*?(?:-----END [A-Z0-9 ]*PRIVATE KEY-----|$)/gi,
+      /-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----[\s\S]*?(?:-----END [A-Z0-9 ]*PRIVATE KEY-----|$)/gi,
       '[REDACTED PRIVATE KEY]'
     )
     .replace(/\bBearer\s+[A-Za-z0-9._~+/-]{8,}={0,2}/gi, 'Bearer [REDACTED]')

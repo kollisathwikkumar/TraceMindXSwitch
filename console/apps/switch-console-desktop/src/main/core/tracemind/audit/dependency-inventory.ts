@@ -3,52 +3,27 @@ import { posix } from 'node:path';
 import { load as loadYaml, JSON_SCHEMA } from 'js-yaml';
 import * as toml from 'smol-toml';
 import { z } from 'zod';
+import {
+  packageNamePattern,
+  dependencyRelativePathSchema,
+  dependencyPackageNameSchema,
+  dependencyPackageVersionSchema,
+} from './dependency-inventory-schema';
 
-export const MAX_DEPENDENCY_LOCKFILE_BYTES = 8 * 1024 * 1024;
-export const MAX_DEPENDENCY_MANIFEST_BYTES = 1024 * 1024;
-export const MAX_DEPENDENCY_CAPTURE_BYTES = 16 * 1024 * 1024;
-export const MAX_DEPENDENCY_CAPTURE_FILES = 128;
-export const MAX_DEPENDENCY_PACKAGES = 10_000;
-export const MAX_DEPENDENCY_EDGES = 20_000;
-
-const packageNamePattern =
-  /^(?:@[A-Za-z0-9][A-Za-z0-9._-]{0,63}\/)?[A-Za-z0-9][A-Za-z0-9._-]{0,214}$/;
-const dependencyRelativePathSchema = z
-  .string()
-  .min(1)
-  .max(4096)
-  .refine(
-    (path) =>
-      !path.startsWith('/') &&
-      !path.includes('\\') &&
-      !/^[A-Za-z]:/.test(path) &&
-      !/[\x00-\x1f\x7f]/.test(path) &&
-      path.split('/').every((part) => part.length > 0 && part !== '.' && part !== '..')
-  );
-const dependencyPackageNameSchema = z
-  .string()
-  .min(1)
-  .max(256)
-  .regex(packageNamePattern)
-  .refine((name) => !name.includes('..'));
-const dependencyPackageVersionSchema = z
-  .string()
-  .max(128)
-  .regex(/^[0-9][0-9A-Za-z.+!-]{0,127}$/)
-  .nullable();
-
-export const dependencyEcosystems = ['npm', 'pnpm', 'cargo', 'poetry', 'python'] as const;
-export type DependencyEcosystem = (typeof dependencyEcosystems)[number];
-export type DependencyCoverage = 'complete' | 'partial' | 'unavailable';
-
-export interface ProjectDependencyPackage {
-  id: string;
-  ecosystem: DependencyEcosystem;
-  name: string;
-  version: string | null;
-  sourcePath: string;
-  direct: boolean;
-}
+export {
+  MAX_DEPENDENCY_LOCKFILE_BYTES,
+  MAX_DEPENDENCY_MANIFEST_BYTES,
+  MAX_DEPENDENCY_CAPTURE_BYTES,
+  MAX_DEPENDENCY_CAPTURE_FILES,
+  MAX_DEPENDENCY_PACKAGES,
+  MAX_DEPENDENCY_EDGES,
+  dependencyEcosystems,
+} from './dependency-inventory-schema';
+export type {
+  DependencyEcosystem,
+  DependencyCoverage,
+  ProjectDependencyPackage,
+} from './dependency-inventory-schema';
 
 export interface ProjectDependencyEdge {
   from: string | null;
